@@ -17,7 +17,7 @@ logger = logging.getLogger()
 logger.setLevel(level)
 
 formatter = logging.Formatter(
-    "%(asctime)s | %(levelname)-8s| %(name)-12s :  %(message)s")
+    "%(asctime)s | %(levelname)-6s| %(name)s:%(lineno)s | %(funcName)s() |  %(message)s")
 
 streamhandler = logging.StreamHandler()
 streamhandler.setFormatter(formatter)
@@ -32,5 +32,5 @@ timehandler = handlers.TimedRotatingFileHandler(
 logger.addHandler(timehandler)
 
 rotatehandler = handlers.RotatingFileHandler(
-    log_path, maxBytes=5*1024*1024, backupCount=10)
+    log_path, maxBytes=2*1024*1024, backupCount=10)
 logger.addHandler(rotatehandler)

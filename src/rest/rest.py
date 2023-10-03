@@ -1,28 +1,30 @@
-from flask import Flask, jsonify
+from flask import Flask
 from flask_pydantic import validate
 from flask_cors import cross_origin
+from rest.expense_service import ExpenseResource, ExpenseService
+from rest.account_service import AccountResource, AccountService
+from rest.config_types_service import ConfigTypeResource, ConfigTypeService
 from rest.resource import (
-    ExpenseResource, 
-    AccountResource, 
-    UserResource, 
-    ConfigTypeResource,
-    BaseFilterQueryModel, 
+    UserResource,
+    BaseFilterQueryModel,
     ConfigTypeQueryModel
 )
-from rest import service
 
 
 app = Flask(__name__)
 ROOT_PATH = "/my-finance/rest"
 
+expense_service = ExpenseService()
+account_service = AccountService()
+config_type_service = ConfigTypeService()
+
+
 @app.get(ROOT_PATH + "/expenses")
 @cross_origin()
 @validate(response_many=True)
 def get_expenses(query: BaseFilterQueryModel):
-    # priority 1
-    results = service.get_expenses()
+    results = expense_service.get_expenses()
     app.logger.debug("result is received")
-    app.logger.debug(results)
     return results
 
 
@@ -30,30 +32,48 @@ def get_expenses(query: BaseFilterQueryModel):
 @cross_origin()
 @validate()
 def add_update_expense(body: ExpenseResource):
-    # priority 1
-    service.add_expense(body)
-    return "created", 201
+    if body.expenseId:
+        response = expense_service.update_expense(body)
+        return response, 200
+    else:
+        response = expense_service.add_expense(body)
+        return response, 201
+
+
+@app.delete(ROOT_PATH + "/expenses/<expense_id>")
+@cross_origin()
+@validate()
+def delete_expense(expense_id: str):
+    response = expense_service.delete_expense(expense_id)
+    return response, 200
 
 
 @app.get(ROOT_PATH + "/accounts")
-@validate()
+@cross_origin()
+@validate(response_many=True)
 def get_accounts(query: BaseFilterQueryModel):
-    # priority 1
-    pass
+    results = account_service.get_accounts()
+    app.logger.debug("result is received")
+    return results
 
 
 @app.post(ROOT_PATH+"/accounts")
+@cross_origin()
 @validate()
 def add_update_account(body: AccountResource):
-    # priority 1
-    pass
+    if body.accountId:
+        account_service.update_account(body)
+    else:
+        account_service.add_account(body)
 
 
 @app.get(ROOT_PATH + "/config/types")
 @cross_origin()
 @validate(response_many=True)
 def get_config_types(query: ConfigTypeQueryModel):
-    return service.get_config_types(query)
+    result = config_type_service.get_config_types(query)
+    app.logger.debug("result config types received")
+    return result
 
 
 @app.post(ROOT_PATH + "/config/types")
@@ -61,12 +81,12 @@ def get_config_types(query: ConfigTypeQueryModel):
 @validate()
 def add_update_config_type(body: ConfigTypeResource):
     if body.configId:
-        updated = service.update_config_type(body)
+        updated = config_type_service.update_config_type(body)
         if not updated:
             return "cannot update config type. unable to find one.", 404
         return "successfully updated"
     else:
-        id = service.add_config_type(body)
+        id = config_type_service.add_config_type(body)
         return id
 
 
