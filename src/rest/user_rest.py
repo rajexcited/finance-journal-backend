@@ -1,7 +1,7 @@
-from flask_restful import Api
 from flask import Flask
 from flask_pydantic import validate
-from flask_cors import CORS
+from flask_cors import cross_origin
+from flask_restful import Resource
 from rest.expense_service import ExpenseResource, ExpenseService
 from rest.account_service import AccountResource, AccountService
 from rest.config_types_service import ConfigTypeResource, ConfigTypeService
@@ -12,17 +12,12 @@ from rest.resource import (
 )
 
 
+class CreateUserApi(Resource):
+    def get(self)
+
+
 app = Flask(__name__)
-CORS(app,
-     origins=["http://localhost:8080"],
-     supports_credentials=True,
-     max_age=30
-     )
-api = Api(app)
 ROOT_PATH = "/my-finance/rest"
-
-api.add_resource(,ROOT_PATH+"/user/signup")
-
 
 expense_service = ExpenseService()
 account_service = AccountService()

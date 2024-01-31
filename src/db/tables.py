@@ -109,13 +109,14 @@ class Account(BaseTable):
     description: Mapped[Optional[str]] = mapped_column(Text)
 
 
-class User(BaseTable):
+class UserTable(BaseTable):
     __tablename__ = "users"
 
     id: Mapped[UUID] = mapped_column(
         Uuid(native_uuid=True), server_default=func.gen_random_uuid(), primary_key=True)
     username: Mapped[str] = mapped_column(Text, nullable=False, unique=True)
     password: Mapped[str] = mapped_column(Text, nullable=False)
-    encrypt_type: Mapped[str] = mapped_column(Text, nullable=False)
-    email_id: Mapped[Optional[str]] = mapped_column(Text)
+    email_id: Mapped[str] = mapped_column(Text, nullable=False, unique=True)
     phone_number: Mapped[Optional[str]] = mapped_column(Text)
+    first_name: Mapped[str] = mapped_column(Text, nullable=False)
+    last_name: Mapped[str] = mapped_column(Text, nullable=False)

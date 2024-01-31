@@ -1,0 +1,11 @@
+1/10/24
+ - add validation and conversion for sign up
+ - add validation and conversion for login
+ 
+1/13/24
+ - user_service.py / auth-service.ts 
+	>> encode username / password for login and signup 
+		>>> reverse string
+		>>> inverse case e.g. uppercase to lowercase or vice-a-versa
+		>>> inverse number 9-n 
+		>>> base64 encoding "atob" function in js

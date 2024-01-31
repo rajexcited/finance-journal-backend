@@ -8,14 +8,18 @@ from db.tables import BaseTable
 
 logger = logging.getLogger(__name__)
 
+UUID_VALIDATE_PATTERN: str = r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+
 
 class BaseResource(SerializeModel):
-    createdBy: Optional[str] = Field(alias="created_by", default="neelsheth")
-    updatedBy: Optional[str] = Field(alias="updated_by", default="neelsheth")
+    createdBy: Optional[str] = Field(alias="created_by", default="dummy")
+    updatedBy: Optional[str] = Field(alias="updated_by", default="dummy")
     createdOn: Optional[datetime] = Field(alias="created_on", default=None)
     updatedOn: Optional[datetime] = Field(alias="updated_on", default=None)
 
     def __init__(self, typechangelist: List[Dict[str, str]] = [], **kwargs):
+        """
+        """
         logger.debug(typechangelist)
         logger.debug("expense resource init kwargs")
         logger.debug(kwargs.items())
@@ -67,16 +71,3 @@ class BaseFilterQueryModel(SerializeModel):
     all: Optional[bool] = None
     pageNumber: Optional[int] = None
     pageSize: Optional[int] = None
-
-
-class UserResource(BaseResource):
-    userId: Optional[str] = Field(alias="id", default=None)
-    username: str
-    password: str
-    encrypt_type: str
-    email_id: Optional[str]
-    phone_number: Optional[str]
-
-    def __init__(self, **kwargs):
-        typechanges = [{"uuidcolumn": "id", "strattr": "userId"}]
-        super().__init__(typechangelist=typechanges, **kwargs)
