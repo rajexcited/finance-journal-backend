@@ -9,3 +9,7 @@
 		>>> inverse case e.g. uppercase to lowercase or vice-a-versa
 		>>> inverse number 9-n 
 		>>> base64 encoding "atob" function in js
+		
+1/15/24
+ - add username to login instead of logining in by email id? not sure if that's worth it. creates lot of complexity. very low priority.
+ 
